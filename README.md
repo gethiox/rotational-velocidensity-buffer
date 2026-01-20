@@ -1,6 +1,7 @@
 # Rotational Velocidensity Buffer
 [![GoDoc](https://godoc.org/github.com/gethiox/rotational-velocidensity-buffer?status.svg)](https://godoc.org/github.com/gethiox/rotational-velocidensity-buffer)
 [![Go Report Card](https://goreportcard.com/badge/github.com/gethiox/rotational-velocidensity-buffer)](https://goreportcard.com/report/github.com/gethiox/rotational-velocidensity-buffer)
+[![CI Status](https://github.com/gethiox/rotational-velocidensity-buffer/actions/workflows/go.yml/badge.svg)](https://github.com/gethiox/rotational-velocidensity-buffer/actions/workflows/go.yml)
 
 RVB is a generic version of classical circular buffer.
 Thanks to [generics](https://go.dev/doc/tutorial/generics), user can conveniently define inner type
