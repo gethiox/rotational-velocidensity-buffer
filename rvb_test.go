@@ -2,6 +2,7 @@ package rvb
 
 import (
 	"fmt"
+	"sync"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -136,7 +137,8 @@ func TestBasic(t *testing.T) {
 					rvb.PushMany(step.Push)
 					assert.Equal(t, step.ExpectedNew, rvb.ReadNew(step.ReadN))
 					assert.Equal(t, step.ExpectedOld, rvb.ReadOld(step.ReadN))
-					assert.Equal(t, step.ExpectedSize, rvb.GetCurrentSIze())
+					assert.Equal(t, step.ExpectedSize, rvb.GetCurrentSize())
+					assert.Equal(t, tc.BufferSize, rvb.GetMaxSize())
 				})
 			}
 		})
@@ -525,7 +527,8 @@ func TestCheckpoint(t *testing.T) {
 						assert.Equal(t, step.Expected, out)
 						assert.Equal(t, step.ExpectedMissing, missing)
 						assert.Equal(t, step.ExpectedNew, rvb.NewItemsSince(cp))
-						assert.Equal(t, step.ExpectedSize, rvb.GetCurrentSIze())
+						assert.Equal(t, step.ExpectedSize, rvb.GetCurrentSize())
+						assert.Equal(t, tc.BufferSize, rvb.GetMaxSize())
 					})
 				case stepPush:
 					rvb.PushMany(step.Values)
@@ -537,4 +540,46 @@ func TestCheckpoint(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestRaceConditions(t *testing.T) {
+	const (
+		bufferSize = 50
+		iterations = 10_000
+		workers    = 64
+	)
+
+	buffer := NewBuffer[int](bufferSize)
+	wg := sync.WaitGroup{}
+	startChan := make(chan struct{})
+
+	for worker := 0; worker < workers; worker++ {
+		wg.Add(1)
+		go func(worker int) {
+			defer wg.Done()
+			<-startChan
+			for i := 0; i < iterations; i++ {
+				buffer.Push(worker*iterations + i)
+			}
+		}(worker)
+	}
+
+	for worker := 0; worker < workers; worker++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			<-startChan
+			for i := 0; i < iterations; i++ {
+				cp := buffer.GetCheckpoint()
+				_, _ = buffer.ReadNewFromCheckpoint(cp, 1, 5)
+				_ = buffer.NewItemsSince(cp)
+				_ = buffer.ReadNew(10)
+				_ = buffer.GetCurrentSize()
+				_ = buffer.GetMaxSize()
+			}
+		}()
+	}
+
+	close(startChan)
+	wg.Wait()
 }

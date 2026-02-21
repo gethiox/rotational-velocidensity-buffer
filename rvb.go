@@ -28,10 +28,18 @@ func NewBuffer[E any](size int) *RVBuffer[E] {
 	}
 }
 
-// GetCurrentSIze will return how many elements is currently being stored in the buffer,
+// GetCurrentSize will return how many elements is currently being stored in the buffer,
 // up to `size` defined at the buffer creation.
-func (b *RVBuffer[E]) GetCurrentSIze() int {
-	return b.currentSize
+func (b *RVBuffer[E]) GetCurrentSize() int {
+	b.mtx.RLock()
+	size := b.currentSize
+	b.mtx.RUnlock()
+	return size
+}
+
+// GetMaxSize will return overall reserved buffer size, defined by user on initialization with NewBuffer.
+func (b *RVBuffer[E]) GetMaxSize() int {
+	return b.size // read-only, safe to read without a lock
 }
 
 // Push will remove the oldest items if maximum buffer size has been reached
