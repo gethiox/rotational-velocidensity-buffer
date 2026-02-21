@@ -31,7 +31,10 @@ func NewBuffer[E any](size int) *RVBuffer[E] {
 // GetCurrentSize will return how many elements is currently being stored in the buffer,
 // up to `size` defined at the buffer creation.
 func (b *RVBuffer[E]) GetCurrentSize() int {
-	return b.currentSize
+	b.mtx.RLock()
+	size := b.currentSize
+	b.mtx.RUnlock()
+	return size
 }
 
 // Push will remove the oldest items if maximum buffer size has been reached
