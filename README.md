@@ -1,11 +1,11 @@
 # Rotational Velocidensity Buffer
 [![GoDoc](https://godoc.org/github.com/gethiox/rotational-velocidensity-buffer?status.svg)](https://godoc.org/github.com/gethiox/rotational-velocidensity-buffer)
 [![Go Report Card](https://goreportcard.com/badge/github.com/gethiox/rotational-velocidensity-buffer)](https://goreportcard.com/report/github.com/gethiox/rotational-velocidensity-buffer)
-[![CI Status](https://github.com/gethiox/rotational-velocidensity-buffer/actions/workflows/go.yml/badge.svg)](https://github.com/gethiox/rotational-velocidensity-buffer/actions/workflows/go.yml)
+[![Tests](https://github.com/gethiox/rotational-velocidensity-buffer/actions/workflows/tests.yml/badge.svg)](https://github.com/gethiox/rotational-velocidensity-buffer/actions/workflows/tests.yml)
 
-RVB is a generic version of classical circular buffer.
-Thanks to [generics](https://go.dev/doc/tutorial/generics), user can conveniently define inner type
-that will be held by the buffer.
+RVB is a generic version of classical circular/ring buffer with a checkpoint support, which lets the user
+access data from a fixed time point of view, especially useful for pagination of historical data.  
+Thanks to [generics](https://go.dev/doc/tutorial/generics), user can conveniently define inner type that will be held by the buffer.
 
 ### Minimum version requirement
 
