@@ -28,9 +28,9 @@ func NewBuffer[E any](size int) *RVBuffer[E] {
 	}
 }
 
-// GetCurrentSIze will return how many elements is currently being stored in the buffer,
+// GetCurrentSize will return how many elements is currently being stored in the buffer,
 // up to `size` defined at the buffer creation.
-func (b *RVBuffer[E]) GetCurrentSIze() int {
+func (b *RVBuffer[E]) GetCurrentSize() int {
 	return b.currentSize
 }
 
