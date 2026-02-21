@@ -138,6 +138,7 @@ func TestBasic(t *testing.T) {
 					assert.Equal(t, step.ExpectedNew, rvb.ReadNew(step.ReadN))
 					assert.Equal(t, step.ExpectedOld, rvb.ReadOld(step.ReadN))
 					assert.Equal(t, step.ExpectedSize, rvb.GetCurrentSize())
+					assert.Equal(t, tc.BufferSize, rvb.GetMaxSize())
 				})
 			}
 		})
@@ -527,6 +528,7 @@ func TestCheckpoint(t *testing.T) {
 						assert.Equal(t, step.ExpectedMissing, missing)
 						assert.Equal(t, step.ExpectedNew, rvb.NewItemsSince(cp))
 						assert.Equal(t, step.ExpectedSize, rvb.GetCurrentSize())
+						assert.Equal(t, tc.BufferSize, rvb.GetMaxSize())
 					})
 				case stepPush:
 					rvb.PushMany(step.Values)
@@ -573,6 +575,7 @@ func TestRaceConditions(t *testing.T) {
 				_ = buffer.NewItemsSince(cp)
 				_ = buffer.ReadNew(10)
 				_ = buffer.GetCurrentSize()
+				_ = buffer.GetMaxSize()
 			}
 		}()
 	}

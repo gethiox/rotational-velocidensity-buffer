@@ -37,6 +37,11 @@ func (b *RVBuffer[E]) GetCurrentSize() int {
 	return size
 }
 
+// GetMaxSize will return overall reserved buffer size, defined by user on initialization with NewBuffer.
+func (b *RVBuffer[E]) GetMaxSize() int {
+	return b.size // read-only, safe to read without a lock
+}
+
 // Push will remove the oldest items if maximum buffer size has been reached
 func (b *RVBuffer[E]) Push(item E) {
 	b.mtx.Lock()
